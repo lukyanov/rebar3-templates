@@ -1,0 +1,133 @@
+#!/bin/bash
+#
+# {{release_name}} service 
+#
+# chkconfig: 2345 80 30
+#
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+NAME="{{release_name}}"
+PREFIX="{{prefix}}"
+
+#check for script,config, and data dirs
+[ -x ${PREFIX}/${NAME}/bin/${NAME} ] || exit 0
+
+RETVAL=0
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="$NAME as standaloone service"
+DAEMON=${PREFIX}/${NAME}/bin/${NAME}
+
+
+start() {
+    #Check if service is running
+    RETVAL=`sudo -H -u $NAME  -i $DAEMON ping`
+    [ "$RETVAL" == "pong" ] && echo "$NAME is already running" && return 0
+
+    # Start daemons.
+    echo -n $"Starting $NAME: "
+    sudo -H -u $NAME -i $DAEMON start && success || failure $"$NAME start"
+    RETVAL=$?
+    [ $(id -u) -eq 0 ] && touch /var/lock/subsys/$NAME
+    [ $RETVAL -eq 0 ]
+    echo
+    return $RETVAL
+}
+
+stop() {
+    # Stop daemon.
+    echo -n $"Stopping $NAME: "
+    RETVAL=`sudo -H -u $NAME -i $DAEMON ping`
+    if [ "$RETVAL" == "pong" ] 
+    then    
+        pid=`sudo -H -u $NAME -i $DAEMON getpid`
+        sudo -H -u $NAME -i  $DAEMON stop 
+        if [ $? == 0 ] ; then
+            [ $(id -u) -eq 0 ] && rm /var/lock/subsys/$NAME
+            success 
+            echo 
+            return 0 
+        fi
+        sleep 2
+        kill -0 $pid >/dev/null  2>&1 
+        if [ $? ==  0  ] ; then
+            [ $(id -u) -eq 0 ] && rm /var/lock/subsys/$NAME
+            success 
+            echo 
+            return 0 
+        fi 
+    fi
+    failure $"$NAME stop"
+    echo
+    return 1
+
+}
+
+reload() {
+    # Restart the VM without exiting the process
+    echo -n $"Reloading $NAME: "
+    RETVAL=`sudo -H -u  $NAME -i $DAEMON ping`
+    [ "$RETVAL" == "pong" ] && sudo -H -u $NAME -i $DAEMON restart  \
+    && success && echo && return 0 || failure $"$NAME restart" 
+    echo
+    return $RETVAL
+}
+
+
+remsh() {
+    RETVAL=`sudo -H -u $NAME -i $DAEMON ping`
+    if [ "$RETVAL" == "pong" ] 
+    then
+        echo -n $"Connecting: "
+        sudo -H -u ${NAME} -i $DAEMON remote_console
+    else
+        echo "no ping from $NAME"
+    fi
+}
+
+attach() {
+    RETVAL=`sudo -H -u $NAME -i $DAEMON ping`
+    if [ "$RETVAL" == "pong" ] 
+    then
+        echo -n $"Connecting: "
+        sudo -H -u ${NAME} -i $DAEMON attach
+    else
+        echo "no ping from $NAME"
+    fi
+}
+
+
+# See how we were called.
+case "$1" in
+    start)
+      start
+    ;;
+    stop)
+      stop
+    ;;
+    restart)
+      stop
+      start
+    ;;
+    reload)
+      reload
+    ;;
+    ping)
+      sudo -H -u $NAME -i $DAEMON ping || exit $?
+    ;;
+    remsh)
+      remsh  
+    ;;
+    attach)
+      attach
+    ;;
+    relvsn)
+      sudo -H -u $NAME -i $DAEMON relvsn || exit $?
+    ;;
+    *)
+      echo $"Usage: $0 {start|stop|reload|restart|ping|remsh|attach|relvsn}"
+      exit 1
+esac
+
+exit $?

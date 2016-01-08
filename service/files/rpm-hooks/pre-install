@@ -1,0 +1,3 @@
+/usr/sbin/groupadd -r {{owner}} >/dev/null 2>&1 || :
+/usr/sbin/useradd -M -N -g {{owner}} -r -d {{prefix}}/{{release_name}} -s /bin/bash \
+	-c "{{release_name}} service" {{owner}} >/dev/null 2>&1 || :

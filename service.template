@@ -1,0 +1,42 @@
+{description, "Erlang service structure"}.
+{variables, [
+    {name, "myproject"},
+    {copyright_year, "2016"},
+    {author_name, "Author Name"},
+    {author_email,"author@email.com"},
+    {description, "Fill in description of the project here."}
+]}.
+
+{file,     "service/rebar3", "rebar3"}.
+{chmod,    "rebar3", 8#744}.
+{template, "service/README.md",    "README.md"}.
+{template, "service/.gitignore",   ".gitignore"}.
+{template, "service/Makefile",     "Makefile"}.
+{template, "service/rebar.config", "rebar.config"}.
+{template, "service/LICENSE",      "LICENSE"}.
+
+{template, "service/run.me.first.sh", "run.me.first.sh"}.
+{chmod,    "run.me.first.sh", 8#744}.
+
+% apps
+{template, "service/apps/service/src/service.app.src", "apps/{{name}}/src/{{name}}.app.src"}.
+{template, "service/apps/service/src/service_app.erl", "apps/{{name}}/src/{{name}}_app.erl"}.
+{template, "service/apps/service/src/service_sup.erl", "apps/{{name}}/src/{{name}}_sup.erl"}.
+
+% config
+{file,     "service/config/app.config",      "config/app.config"}.
+{file,     "service/config/sys.config",      "config/sys.config"}.
+{file,     "service/config/vars-dev.config", "config/vars-dev.config"}.
+{file,     "service/config/vars.config",     "config/vars.config"}.
+{file,     "service/config/vm.args",         "config/vm.args"}.
+
+% files
+{file,     "service/files/nodetool", "files/nodetool"}.
+{chmod,    "files/nodetool", 8#744}.
+{file,     "service/files/start",    "files/start"}.
+{chmod,    "files/start", 8#744}.
+{file,     "service/files/service.redhat",           "files/service.redhat"}.
+{file,     "service/files/rpm-hooks/post-install",   "files/rpm-hooks/post-install"}.
+{file,     "service/files/rpm-hooks/post-uninstall", "files/rpm-hooks/post-uninstall"}.
+{file,     "service/files/rpm-hooks/pre-install",    "files/rpm-hooks/pre-install"}.
+{file,     "service/files/rpm-hooks/pre-uninstall",  "files/rpm-hooks/pre-uninstall"}.

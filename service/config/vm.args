@@ -1,0 +1,6 @@
+-sname {{release_name}}
+
+-setcookie {{cookie}}
+
++K true
++A30
