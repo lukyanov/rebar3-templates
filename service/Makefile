@@ -32,3 +32,7 @@ shell:
 .PHONY: check
 check:
 	$(REBAR) check
+
+.PHONY: tar
+tar:
+	$(REBAR) as prod tar
