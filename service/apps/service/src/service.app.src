@@ -5,7 +5,8 @@
     {mod, {'{{name}}_app', []}},
     {applications, [
         kernel,
-        stdlib
+        stdlib,
+        lager
     ]},
     {env,[]},
     {modules, []},
