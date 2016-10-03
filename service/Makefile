@@ -29,10 +29,17 @@ run:
 shell:
 	$(REBAR) auto
 
-.PHONY: check
-check:
-	$(REBAR) check
-
 .PHONY: tar
 tar:
 	$(REBAR) as prod tar
+
+.PHONY: unit-tests
+unit-tests:
+	$(REBAR) eunit
+
+.PHONY: integration-tests
+integration-tests:
+	$(REBAR) ct
+
+.PHONY: check
+check: unit-tests integration-tests
