@@ -40,3 +40,6 @@
 {file,     "service/files/rpm-hooks/post-uninstall", "files/rpm-hooks/post-uninstall"}.
 {file,     "service/files/rpm-hooks/pre-install",    "files/rpm-hooks/pre-install"}.
 {file,     "service/files/rpm-hooks/pre-uninstall",  "files/rpm-hooks/pre-uninstall"}.
+
+% test
+{file,     "service/test/.gitkeep",         "test/.gitkeep"}.
