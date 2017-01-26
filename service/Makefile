@@ -11,7 +11,7 @@ compile:
 
 .PHONY: clean
 clean:
-	$(REBAR) clean
+	$(REBAR) clean -a
 
 .PHONY: distclean
 distclean: clean
